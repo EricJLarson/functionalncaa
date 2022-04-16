@@ -12,7 +12,7 @@ import numpy as np
 # winner
 def w(game): return game[0]
 
-# History
+# history
 def h(game): return game[1]
 
 # seed
