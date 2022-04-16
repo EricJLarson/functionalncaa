@@ -29,8 +29,10 @@ def determineWinner(teamA, teamB, depth):
     noise = np.random.uniform(0, roundVariation)
     seedSum = s(teamA) + s(teamB)
     noise = min(noise, s(teamA)/seedSum , s(teamB)/seedSum)
-    probs = (s(teamA) / seedSum - noise, 
-     s(teamB) / seedSum + noise) 
+    probs = (
+        s(teamA) / seedSum - noise, 
+        s(teamB) / seedSum + noise
+    ) 
     index = np.random.choice(2, p = probs)
     return teamB if index == 0 else teamA
 
