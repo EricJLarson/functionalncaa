@@ -34,12 +34,8 @@ def determineWinner(teamA, teamB, depth):
     index = np.random.choice(2, p = probs)
     return teamB if index == 0 else teamA
 
-def determineWinnerSimple(teamA, teamB, depth):
-    return teamA if s(teamA) < s(teamB) else teamB
-
 def game(gameA, gameB):
     winner = determineWinner(w(gameA), w(gameB), depth(gameA)) 
-    #winner = determineWinnerSimple(w(gameA), w(gameB), depth(gameA)) 
     history = (gameA, gameB)
     return (winner, history)
 
