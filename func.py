@@ -23,8 +23,12 @@ def n(team): return team[0]
 def depth(game):
     return 0 if len(game) == 1 else depth(h(game)[0]) + 1
 
+def determineWinner(teamA, teamB, depth):
+    winner = teamA if s(teamA) < s(teamB) else teamB 
+    return winner
+
 def game(gameA, gameB):
-    winner = w(gameA) if s(w(gameA)) < s(w(gameB)) else w(gameB) 
+    winner = determineWinner(w(gameA), w(gameB), depth(gameA)) 
     history = (gameA, gameB)
     return (winner, history)
 
