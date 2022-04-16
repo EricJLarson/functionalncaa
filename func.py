@@ -1,4 +1,5 @@
 import bracket
+import numpy as np
 
 """
  Each GAME is represented by a tuple: (WINNER,(HISTORY_A, HISTORY_B)), where each HISTORY 
@@ -24,11 +25,21 @@ def depth(game):
     return 0 if len(game) == 1 else depth(h(game)[0]) + 1
 
 def determineWinner(teamA, teamB, depth):
-    winner = teamA if s(teamA) < s(teamB) else teamB 
-    return winner
+    roundVariation = (depth + 1) * 0.25 if depth  < 4 else 0.0
+    noise = np.random.uniform(0, roundVariation)
+    seedSum = s(teamA) + s(teamB)
+    noise = min(noise, s(teamA)/seedSum , s(teamB)/seedSum)
+    probs = (s(teamA) / seedSum - noise, 
+     s(teamB) / seedSum + noise) 
+    index = np.random.choice(2, p = probs)
+    return teamB if index == 0 else teamA
+
+def determineWinnerSimple(teamA, teamB, depth):
+    return teamA if s(teamA) < s(teamB) else teamB
 
 def game(gameA, gameB):
     winner = determineWinner(w(gameA), w(gameB), depth(gameA)) 
+    #winner = determineWinnerSimple(w(gameA), w(gameB), depth(gameA)) 
     history = (gameA, gameB)
     return (winner, history)
 
