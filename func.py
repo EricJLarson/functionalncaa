@@ -21,9 +21,7 @@ def s(team): return team[1]
 def n(team): return team[0]
 
 def depth(game):
-    if len(game) == 1:
-        return 0
-    return depth(h(game)) + 1
+    return 0 if len(game) == 1 else depth(h(game)[0]) + 1
 
 def game(gameA, gameB):
     winner = w(gameA) if s(w(gameA)) < s(w(gameB)) else w(gameB) 
