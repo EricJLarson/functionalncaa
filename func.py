@@ -1,4 +1,4 @@
-import numpy as np
+import bracket
 
 """
  Each GAME is represented by a tuple: (WINNER,(HISTORY_A, HISTORY_B)), where each HISTORY 
@@ -8,55 +8,27 @@ import numpy as np
  A TEAM is a tuple: (NAME, SEED).
 """
 
-""" 2022 Men's NCAA Tournament Bracket """ 
-bracket = [
-    # West Region
-    ('GONZ', 1),
-    ('GAST', 16),
-    
-    ('BSU', 8),
-    ('MEM', 9),
-    
-    ('CONN', 5),
-    ('NMSU', 12),    
-    
-    ('ARK', 4),
-    ('UVM', 13),
-    
-    ('ALA', 6),
-    ('ND', 11),        
-
-    ('TTU', 3),
-    ('MTST', 14),        
-    
-    ('MSU', 7),
-    ('DAV', 10),        
-    
-    ('DUKE', 2),
-    ('CSUF', 15),    
-]
-
 # winner
-def w(a): 
-    return a[0]
-
-# seed
-def s(a): 
-    return a[1]
+def w(game): return game[0]
 
 # History
-def h(game):
-    return game[1]
+def h(game): return game[1]
+
+# seed
+def s(team): return team[1]
+
+# name 
+def n(team): return team[0]
 
 def depth(game):
     if len(game) == 1:
         return 0
     return depth(h(game)) + 1
 
-# Takes two GAMEs 
-def game(a,b):
-    depth(a)
-    return (w(a) if s(w(a)) < s(w(b)) else w(b), (a, b))
+def game(gameA, gameB):
+    winner = w(gameA) if s(w(gameA)) < s(w(gameB)) else w(gameB) 
+    history = (gameA, gameB)
+    return (winner, history)
 
 def simulate(bracket):  
     if len(bracket) == 2:
@@ -67,10 +39,14 @@ def simulate(bracket):
         right = bracket[middle:]
         return simulate((simulate(left), simulate(right)))
 
+bracket22 = bracket.bracket 
 # Convert each TEAM to a GAME with an emtpy HISTORY
-initial_games = [ (team,) for team in bracket ]
+initial_games = [ (team,) for team in bracket22 ]
+results = simulate(initial_games)
 
-tournament = simulate(initial_games)
+"""
+Examples of querying the results
+"""
 
 def find(game, name):
     if len(game) == 1:
@@ -79,6 +55,20 @@ def find(game, name):
         return depth(game) 
     return max(find(h(game)[0], name), find(h(game)[1], name) )
 
-find(tournament, 'BSU')
+def getFind(game):
+    return lambda name: find(game, name)
 
+print(f'Winner {w(results)}')
+aub = find(results, "AUB")
+print(f'AUB level: {aub}')
+
+def getResults(results):
+    findFinal = getFind(results)
+    team2result = [ (n(team), s(team), findFinal(n(team))) for team in bracket22 ]
+    team2result.sort(key = lambda x: x[2]) 
+    team2resultStr = '\n'.join([ f'{n(result)},{s(result)}, {result[2]}' for result in team2result ])
+    return team2resultStr
+
+team2resultStr = getResults(results)
+print(f'\n\nTEAM,SEED,LEVEL\n---------\n{team2resultStr}')
 
